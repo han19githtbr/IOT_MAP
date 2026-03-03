@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Tecnologias — iFIKIRIA IoT</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0d1117; font-family:'Segoe UI',system-ui,sans-serif; color:#e6edf3; min-height:100vh; }
+h1 { text-align:center; padding:24px 20px 4px; font-size:1.3rem; font-weight:700; }
+.sub { text-align:center; color:#8b949e; font-size:0.78rem; margin-bottom:18px; }
+.flow { display:flex; flex-direction:column; align-items:center; padding:0 14px 130px; gap:0; }
+
+/* Layers */
+.layer { width:100%; max-width:960px; border-radius:14px; padding:13px 16px 12px; }
+.ll { font-size:0.6rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:9px; opacity:.55; }
+.lc { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+
+/* Layer colors */
+.l-device  { background:#0a1a10; border:1.5px solid #238636; }
+.l-proto   { background:#0f1520; border:1.5px solid #388bfd; }
+.l-cloud   { background:#1a1200; border:1.5px solid #d29922; }
+.l-fe      { background:#0f1f33; border:1.5px solid #1f6feb; }
+.l-firebase{ background:#1a0a00; border:1.5px solid #f57c00; }
+.l-infra   { background:#1a0a0a; border:1.5px solid #da3633; }
+
+/* Arrow */
+.aw { display:flex; flex-direction:column; align-items:center; width:100%; max-width:960px; margin:2px 0; cursor:pointer; transition:opacity .2s; }
+.aw:hover { opacity:.8; }
+.al { width:2px; height:28px; background:linear-gradient(to bottom,#30363d,#58a6ff); position:relative; }
+.alb { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:.62rem; color:#58a6ff; background:#0d1117; padding:1px 9px; border-radius:20px; border:1px solid #30363d; white-space:nowrap; transition:all .2s; }
+.aw:hover .alb { background:#1f6feb; color:#fff; border-color:#1f6feb; }
+.ad { width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid #58a6ff; transition:border-top-color .2s; }
+.aw:hover .ad { border-top-color:#1f6feb; }
+
+/* Cards */
+.card { display:flex; flex-direction:column; align-items:center; padding:9px 12px 8px; border-radius:11px; cursor:pointer; transition:transform .15s,box-shadow .15s; border:1.5px solid transparent; min-width:96px; text-align:center; }
+.card:hover { transform:translateY(-3px) scale(1.04); z-index:10; }
+.ci { font-size:1.4rem; margin-bottom:3px; line-height:1; }
+.cn { font-size:.71rem; font-weight:700; }
+.cr { font-size:.58rem; opacity:.65; margin-top:2px; }
+
+/* Card colors */
+.cg  { background:#0d1f11; border-color:#238636; } .cg:hover  { box-shadow:0 4px 20px #23863655; }
+.cb  { background:#0d2340; border-color:#1f6feb; } .cb:hover  { box-shadow:0 4px 20px #1f6feb55; }
+.cy  { background:#211900; border-color:#d29922; } .cy:hover  { box-shadow:0 4px 20px #d2992255; }
+.cp  { background:#1a0e2a; border-color:#8957e5; } .cp:hover  { box-shadow:0 4px 20px #8957e555; }
+.cc  { background:#161b22; border-color:#30363d; } .cc:hover  { box-shadow:0 4px 20px #8b949e44; }
+.cr2 { background:#1f0d0d; border-color:#da3633; } .cr2:hover { box-shadow:0 4px 20px #da363355; }
+.co  { background:#1f1200; border-color:#f57c00; } .co:hover  { box-shadow:0 4px 20px #f57c0055; }
+.cbl { background:#0a1520; border-color:#388bfd; } .cbl:hover { box-shadow:0 4px 20px #388bfd55; }
+
+/* Side-by-side row */
+.row-split { display:flex; gap:12px; width:100%; max-width:960px; flex-wrap:wrap; }
+.row-split .layer { flex:1; min-width:200px; margin-bottom:0; }
+
+/* Detail panel */
+#det { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#161b22; border:1.5px solid #30363d; border-radius:13px; padding:14px 18px; max-width:480px; width:calc(100% - 28px); z-index:999; box-shadow:0 8px 32px #000a; display:none; }
+#dt  { font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:20px; margin-bottom:6px; display:inline-block; }
+#dn  { font-size:.92rem; font-weight:700; margin-bottom:5px; color:#f0f6ff; }
+#dd  { font-size:.77rem; color:#8b949e; line-height:1.6; }
+#xb  { position:absolute; top:9px; right:12px; background:none; border:none; color:#8b949e; font-size:.95rem; cursor:pointer; }
+
+/* Legend */
+.leg { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; padding:0 16px 26px; max-width:960px; margin:0 auto; }
+.li2 { display:flex; align-items:center; gap:5px; font-size:.68rem; color:#8b949e; }
+.ld2 { width:9px; height:9px; border-radius:50%; }
+</style>
+</head>
+<body>
+
+<h1>🗺️ Mapa de Tecnologias — Sistema IoT iFIKIRIA</h1>
+<p class="sub">Dispositivos ESP / Raspberry Pi &nbsp;·&nbsp; Firebase Cloud Functions &nbsp;·&nbsp; Firebase Realtime Database &nbsp;·&nbsp; Front-end Web<br>
+<span style="opacity:.55">Clique em qualquer bloco ou seta para ver detalhes</span></p>
+
+<div class="flow">
+
+  <!-- LAYER 1: Devices -->
+  <div class="layer l-device">
+    <div class="ll">Camada de Dispositivos IoT (Hardware)</div>
+    <div class="lc">
+      <div class="card cg" onclick="show('esp')"><div class="ci">📡</div><div class="cn">ESP8266 / ESP32</div><div class="cr">Sensor T/H · MAC Address</div></div>
+      <div class="card cg" onclick="show('rasp')"><div class="ci">🖥️</div><div class="cn">Raspberry Pi</div><div class="cr">Gateway · múltiplos ESPs</div></div>
+      <div class="card cg" onclick="show('freezer')"><div class="ci">🌡️</div><div class="cn">Sensor Freezer / KWH</div><div class="cr">Temperatura · Energia · Porta</div></div>
+      <div class="card cg" onclick="show('firmware')"><div class="ci">⚙️</div><div class="cn">Firmware OTA</div><div class="cr">updateFirmwareV2.js</div></div>
+    </div>
+  </div>
+
+  <div class="aw" onclick="show('conn_iot')">
+    <div class="al"><span class="alb">HTTPS GET — query params (thingid, T, H, currentUID…)</span></div>
+    <div class="ad"></div>
+  </div>
+
+  <!-- LAYER 2: Firebase Cloud Functions -->
+  <div class="layer l-cloud">
+    <div class="ll">Back-end — Firebase Cloud Functions v2 (Node.js)</div>
+    <div class="lc">
+      <div class="card cy" onclick="show('addDevice')"><div class="ci">➕</div><div class="cn">addDeviceV2</div><div class="cr">Cadastra dispositivo</div></div>
+      <div class="card cy" onclick="show('initDevice')"><div class="ci">✅</div><div class="cn">initDeviceV2</div><div class="cr">Aprova · vincula usuário</div></div>
+      <div class="card cy" onclick="show('initDeviceManual')"><div class="ci">🛠️</div><div class="cn">initDeviceManualV2</div><div class="cr">Aprovação manual + estrutura</div></div>
+      <div class="card cy" onclick="show('initRasp')"><div class="ci">🔗</div><div class="cn">initRaspDeviceV2</div><div class="cr">Inicializa ESPs via Rasp</div></div>
+      <div class="card cy" onclick="show('thV2')"><div class="ci">🌡️</div><div class="cn">thV2</div><div class="cr">Recebe T/H · RAWDATA</div></div>
+      <div class="card cy" onclick="show('thRasp')"><div class="ci">🔄</div><div class="cn">thRaspV2</div><div class="cr">T/H via Raspberry</div></div>
+      <div class="card cy" onclick="show('tkwhp')"><div class="ci">⚡</div><div class="cn">tkwhpV2 / tkwhpnew</div><div class="cr">Temperatura + KWH + Porta</div></div>
+      <div class="card cy" onclick="show('updateFw')"><div class="ci">📦</div><div class="cn">updateFirmwareV2</div><div class="cr">OTA · versão firmware</div></div>
+    </div>
+  </div>
+
+  <!-- Utils row -->
+  <div class="row-split" style="margin-top:8px;">
+    <div class="layer" style="background:#1a1000;border:1.5px solid #d29922;flex:1;min-width:180px;">
+      <div class="ll">Utilitários (Back-end)</div>
+      <div class="lc">
+        <div class="card cy" onclick="show('sensoresUtils')"><div class="ci">🔧</div><div class="cn">sensoresUtils.js</div><div class="cr">updateSensores · getTemplate</div></div>
+        <div class="card cy" onclick="show('deviceUtils')"><div class="ci">📋</div><div class="cn">deviceUtils.js</div><div class="cr">getDeviceInfoByMacAddress</div></div>
+        <div class="card cy" onclick="show('nodemailer')"><div class="ci">📧</div><div class="cn">Nodemailer + Gmail</div><div class="cr">E-mail de confirmação</div></div>
+      </div>
+    </div>
+    <div class="layer" style="background:#0f1a20;border:1.5px solid #388bfd;flex:1;min-width:180px;">
+      <div class="ll">Firebase Admin SDK</div>
+      <div class="lc">
+        <div class="card cbl" onclick="show('adminSdk')"><div class="ci">🔑</div><div class="cn">admin.js</div><div class="cr">Service Account · inicialização</div></div>
+        <div class="card cbl" onclick="show('fcm')"><div class="ci">🔔</div><div class="cn">FCM Messaging</div><div class="cr">Push notifications · alertas</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aw" onclick="show('conn_db')">
+    <div class="al"><span class="alb">Firebase Admin SDK — Realtime Database read/write</span></div>
+    <div class="ad"></div>
+  </div>
+
+  <!-- LAYER 3: Firebase Realtime DB -->
+  <div class="layer l-firebase">
+    <div class="ll">Firebase Realtime Database — Estrutura de Dados</div>
+    <div class="lc">
+      <div class="card co" onclick="show('db_devices')"><div class="ci">📱</div><div class="cn">devices/{email}</div><div class="cr">Fila de aprovação</div></div>
+      <div class="card co" onclick="show('db_users')"><div class="ci">👤</div><div class="cn">users/{uid}/devices</div><div class="cr">Dispositivos vinculados</div></div>
+      <div class="card co" onclick="show('db_lojas')"><div class="ci">🏪</div><div class="cn">users/{uid}/lojas</div><div class="cr">Sites · Salas · Equipamentos</div></div>
+      <div class="card co" onclick="show('db_th')"><div class="ci">📊</div><div class="cn">th/{uid}/{mac}/{dia}</div><div class="cr">RAWDATA · MINMAXAVG</div></div>
+      <div class="card co" onclick="show('db_tkwhp')"><div class="ci">⚡</div><div class="cn">tkwhp/{uid}/{mac}/{dia}</div><div class="cr">T + KWH + Porta + Motor</div></div>
+      <div class="card co" onclick="show('db_planos')"><div class="ci">💎</div><div class="cn">users/{uid}/planos</div><div class="cr">Ouro · Diamante · limites</div></div>
+      <div class="card co" onclick="show('db_perfil')"><div class="ci">🪪</div><div class="cn">users/{uid}/perfil</div><div class="cr">Plano · dados do usuário</div></div>
+      <div class="card co" onclick="show('db_tokens')"><div class="ci">📲</div><div class="cn">users/{uid}/deviceTokens</div><div class="cr">Tokens FCM · smartphones</div></div>
+    </div>
+  </div>
+
+  <div class="aw" onclick="show('conn_sdk')">
+    <div class="al"><span class="alb">Firebase Web SDK — onValue listener (real-time) + once()</span></div>
+    <div class="ad"></div>
+  </div>
+
+  <!-- LAYER 4: Front-end -->
+  <div class="layer l-fe">
+    <div class="ll">Front-end — Web App (devices.html + devices.js)</div>
+    <div class="lc">
+      <div class="card cb" onclick="show('html')"><div class="ci">🖼️</div><div class="cn">devices.html</div><div class="cr">EJS · Bootstrap 4 · layout</div></div>
+      <div class="card cb" onclick="show('devjs')"><div class="ci">📜</div><div class="cn">devices.js (ES6)</div><div class="cr">Controller principal</div></div>
+      <div class="card cb" onclick="show('auth')"><div class="ci">🔐</div><div class="cn">Firebase Auth</div><div class="cr">onAuthStateChanged</div></div>
+      <div class="card cb" onclick="show('rtdb_fe')"><div class="ci">🔁</div><div class="cn">Firebase RTDB SDK</div><div class="cr">Leitura/escrita em tempo real</div></div>
+      <div class="card cb" onclick="show('bootstrap')"><div class="ci">🎨</div><div class="cn">Bootstrap 4 + SB Admin 2</div><div class="cr">UI responsiva · tabs · modals</div></div>
+      <div class="card cb" onclick="show('jquery')"><div class="ci">⚡</div><div class="cn">jQuery</div><div class="cr">DOM helpers · util.js</div></div>
+    </div>
+  </div>
+
+  <!-- LAYER 5: Infra -->
+  <div class="aw" onclick="show('conn_infra')">
+    <div class="al"><span class="alb">Deploy · Hosting · Configuração</span></div>
+    <div class="ad"></div>
+  </div>
+
+  <div class="layer l-infra">
+    <div class="ll">Infraestrutura / Deploy</div>
+    <div class="lc">
+      <div class="card cr2" onclick="show('firebase_hosting')"><div class="ci">🔥</div><div class="cn">Firebase Hosting</div><div class="cr">CDN · HTTPS automático</div></div>
+      <div class="card cr2" onclick="show('nodejs')"><div class="ci">🟩</div><div class="cn">Node.js</div><div class="cr">Runtime das Cloud Functions</div></div>
+      <div class="card cr2" onclick="show('service_account')"><div class="ci">🗝️</div><div class="cn">Service Account JSON</div><div class="cr">Credenciais Admin SDK</div></div>
+      <div class="card cr2" onclick="show('express')"><div class="ci">🚂</div><div class="cn">Express + EJS</div><div class="cr">app.js · views · layouts</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Legend -->
+<div class="leg">
+  <div class="li2"><div class="ld2" style="background:#238636"></div> Dispositivos IoT</div>
+  <div class="li2"><div class="ld2" style="background:#d29922"></div> Cloud Functions (Back-end)</div>
+  <div class="li2"><div class="ld2" style="background:#f57c00"></div> Firebase Realtime DB</div>
+  <div class="li2"><div class="ld2" style="background:#1f6feb"></div> Front-end Web</div>
+  <div class="li2"><div class="ld2" style="background:#388bfd"></div> Firebase Admin SDK</div>
+  <div class="li2"><div class="ld2" style="background:#da3633"></div> Infraestrutura</div>
+</div>
+
+<!-- Detail Panel -->
+<div id="det">
+  <button id="xb" onclick="document.getElementById('det').style.display='none'">✕</button>
+  <div id="dt"></div>
+  <div id="dn"></div>
+  <p id="dd"></p>
+</div>
+
+<script>
+var D = {
+  /* Devices */
+  esp: { t:'Dispositivo IoT', c:'#238636', n:'ESP8266 / ESP32', d:'Microcontroladores Wi-Fi que coletam temperatura (T) e umidade (H) via sensor DHT. Identificados pelo MAC Address. Enviam dados periodicamente via HTTP GET para as Cloud Functions (thV2 ou thRaspV2), com parâmetros como thingid, currentUID, T, H e tempo.' },
+  rasp: { t:'Dispositivo IoT', c:'#238636', n:'Raspberry Pi — Gateway', d:'Atua como concentrador de múltiplos ESPs. Cada ESP é acoplado ao Rasp e identificado pelo raspKEY. O initRaspDeviceV2 processa a string de MACs separados por "ESP" e vincula todos de uma vez à conta do usuário.' },
+  freezer: { t:'Dispositivo IoT', c:'#238636', n:'Sensor Freezer / KWH', d:'Dispositivos especializados que enviam temperatura (T), consumo de energia (KWH), estado da porta (P: 00=fechada/01=aberta) e estado do motor (M: 0=ligado/1=desligado). Processados pelas functions tkwhpV2 e tkwhpnew.' },
+  firmware: { t:'Dispositivo IoT', c:'#238636', n:'Firmware OTA', d:'O dispositivo consulta updateFirmwareV2 enviando seu currentUID, macAddress e versionFirmware atual. A function compara com a versão mais recente no banco (nó "firmware") e retorna a URL de download se houver atualização disponível.' },
+
+  /* Connections */
+  conn_iot: { t:'Conexão', c:'#58a6ff', n:'HTTPS GET — IoT → Cloud Functions', d:'Os dispositivos (ESP/Rasp) fazem requisições HTTP GET com parâmetros na query string: thingid (MAC Address), currentUID (UID do Firebase Auth), T (temperatura), H (umidade), tempo (timestamp no formato AAAAMMDDhh:mm). As Cloud Functions respondem com JSON de status.' },
+  conn_db: { t:'Conexão', c:'#f57c00', n:'Firebase Admin SDK → Realtime Database', d:'As Cloud Functions usam o Admin SDK (credencial de service account) para ler e gravar no Firebase Realtime Database. Operações: once("value") para leitura única, on("value") para listeners, push() para inserção, update() para atualização parcial e set() para sobrescrita.' },
+  conn_sdk: { t:'Conexão', c:'#1f6feb', n:'Firebase Web SDK → Front-end', d:'O front-end usa o Firebase Web SDK (v7.17.1 via CDN /__/firebase/) para escutar mudanças em tempo real com .on("value"). Isso permite que a tabela de dispositivos se atualize automaticamente quando dados mudam no banco, sem recarregar a página.' },
+  conn_infra: { t:'Conexão', c:'#da3633', n:'Deploy e Infraestrutura', d:'O Firebase Hosting serve os arquivos estáticos (HTML, CSS, JS) com CDN e HTTPS automático. As Cloud Functions rodam em Node.js gerenciado pelo Firebase. O arquivo init.js (/__/firebase/init.js) injeta automaticamente a configuração do Firebase no front-end.' },
+
+  /* Cloud Functions */
+  addDevice: { t:'Cloud Function', c:'#d29922', n:'addDeviceV2', d:'Endpoint chamado pelo dispositivo no primeiro boot. Recebe key (MAC) e email do usuário. Verifica no nó devices/{email} se o dispositivo já existe para evitar duplicatas. Se for novo, cria uma entrada com status "NEW" e dispara um e-mail via Nodemailer avisando o usuário para acessar o painel e aprovar.' },
+  initDevice: { t:'Cloud Function', c:'#d29922', n:'initDeviceV2', d:'Chamado após o usuário aprovar o device no painel. Busca o device em devices/{email} e, se status == "APROVADO", move para users/{uid}/devices com status "OK", configura o plano (ouro/diamante) em users/{uid}/planos/{thingid} com os limites corretos, e apaga o device da fila de aprovação.' },
+  initDeviceManual: { t:'Cloud Function', c:'#d29922', n:'initDeviceManualV2', d:'Versão avançada de aprovação manual pelo admin. Recebe thingid, email, timezone, amostragem, currentUID, site, room e isFreezer. Cria a entrada em users/{uid}/devices, persiste o device na estrutura lojas/salas/equipamentos (via persistDeviceToStructure), tenta copiar o template de sensores de outro device da mesma sala, e atualiza o plano do usuário.' },
+  initRasp: { t:'Cloud Function', c:'#d29922', n:'initRaspDeviceV2', d:'Inicializa múltiplos ESPs acoplados a um Raspberry Pi. Recebe uma string de MACs concatenados por "ESP" no parâmetro thingid, que é quebrada em array com .split("ESP"). Para cada MAC, verifica existência no banco e configura o plano. Vincula todos os ESPs ao raspKEY do Rasp pai.' },
+  thV2: { t:'Cloud Function', c:'#d29922', n:'thV2', d:'Recebe dados de temperatura e umidade de ESPs diretos (sem Raspberry). Parseia o timestamp do dispositivo (formato AAAAMMDDhh:mm), grava em th/{uid}/{thingid}/{dia}/RAWDATA via push(). Mantém estatísticas diárias em MINMAXAVG: mínima, máxima, soma acumulada e quantidade para cálculo de média.' },
+  thRasp: { t:'Cloud Function', c:'#d29922', n:'thRaspV2', d:'Versão do thV2 para ESPs acoplados ao Raspberry. Recebe rasp (MAC do Rasp) e esp (MAC do ESP). Verifica se o Rasp pertence ao usuário, grava RAWDATA e MINMAXAVG em th/{uid}/{macESP}/{dia}. Adicionalmente chama getDeviceInfoByMacAddress() e updateSensoresValues() para atualizar a estrutura de lojas/salas/equipamentos.' },
+  tkwhp: { t:'Cloud Function', c:'#d29922', n:'tkwhpV2 / tkwhpnew', d:'Recebe dados de freezers: temperatura (T), consumo (KWH), porta (P) e motor (M). Usa a hora do servidor (GMT-3) em vez do timestamp do device. Verifica se T ultrapassa temperaturaAlarme configurada pelo usuário e, se sim, envia push notification via FCM. tkwhpnew suporta múltiplos tokens de smartphone; tkwhpV2 usa token único.' },
+  updateFw: { t:'Cloud Function', c:'#d29922', n:'updateFirmwareV2', d:'O device consulta este endpoint a cada boot passando seu versionFirmware atual. A function atualiza o campo versionFirmware no devices do usuário e consulta o nó "firmware" no banco, retornando a URL e versão mais recente. O device então decide se deve baixar a nova versão.' },
+
+  /* Utils */
+  sensoresUtils: { t:'Utilitário Back-end', c:'#d29922', n:'sensoresUtils.js', d:'Módulo com duas funções: updateSensoresValues() percorre a árvore users/{uid}/lojas → salas → equipamentos, encontra o device pelo ID e atualiza os valores dos sensores (temperatura, umidade) com timestamp ISO. getSensoresTemplate() busca os sensores de um device existente na mesma sala para usar como modelo ao adicionar um novo device.' },
+  deviceUtils: { t:'Utilitário Back-end', c:'#d29922', n:'deviceUtils.js', d:'Exporta getDeviceInfoByMacAddress(userUUID, macAddress). Varre users/{uid}/devices procurando pelo campo key igual ao MAC do ESP e retorna o site e room configurados. Usado por thRaspV2 e tkwhpnew para saber em qual loja/sala persistir os dados atualizados do sensor.' },
+  nodemailer: { t:'Utilitário Back-end', c:'#d29922', n:'Nodemailer + Gmail SMTP', d:'Biblioteca Node.js para envio de e-mails. Configurada com conta console.fikiria@gmail.com via SMTP do Gmail. Usada em addDeviceV2 (notifica novo cadastro), initDeviceV2 e initDeviceManualV2 (confirma aprovação). Os e-mails contêm HTML formatado com link para o console.' },
+
+  /* Firebase Admin */
+  adminSdk: { t:'Firebase Admin SDK', c:'#388bfd', n:'admin.js — Inicialização', d:'Singleton que inicializa o Firebase Admin SDK usando a service account (fikiria-console-2577d11aac4f.json). Usa padrão de guarda "if (initialized) return" para evitar múltiplas inicializações. Expõe o objeto admin para todas as Cloud Functions via require("../firebaseConfig/admin").' },
+  fcm: { t:'Firebase Admin SDK', c:'#388bfd', n:'FCM — Firebase Cloud Messaging', d:'Usado pelas functions tkwhpV2 e tkwhpnew para enviar push notifications aos smartphones dos usuários quando a temperatura ultrapassa o limite configurado (temperaturaAlarme). As functions buscam os tokens FCM em users/{uid}/deviceTokens e usam admin.messaging().send() para cada token.' },
+
+  /* Realtime DB */
+  db_devices: { t:'Firebase RTDB', c:'#f57c00', n:'devices/{email}', d:'Fila temporária de aprovação de dispositivos. Quando um device faz o primeiro boot e chama addDeviceV2, é criada uma entrada aqui com status "NEW". O usuário vê esse device na aba "Novos" da página devices.html e pode APROVAR ou RECUSAR. Após aprovação via initDeviceV2, a entrada é excluída (set null) deste nó.' },
+  db_users: { t:'Firebase RTDB', c:'#f57c00', n:'users/{uid}/devices', d:'Lista de dispositivos vinculados e aprovados do usuário. Cada entrada contém: key (MAC Address), status (OK), alias (apelido), site, room, timeZone, amostragem, temperaturaAlarme, variables e versionFirmware. É o nó principal lido pelo front-end devices.js para montar a tabela de dispositivos.' },
+  db_lojas: { t:'Firebase RTDB', c:'#f57c00', n:'users/{uid}/lojas', d:'Estrutura hierárquica criada pelo initDeviceManualV2 e persistDeviceToStructure(). Array de lojas, cada loja com {id, nome, salas:[{nome, equipamentos:[{id, nome, status, sensores:[{tipo, valor, unidade, timestamp, status}]}]}]}. Permite organizar os dispositivos por estabelecimento e ambiente. É a base do painel de monitoramento em tempo real.' },
+  db_th: { t:'Firebase RTDB', c:'#f57c00', n:'th/{uid}/{mac}/{dia}', d:'Armazenamento de dados de temperatura e umidade. RAWDATA: cada leitura individual com {DT, T, H} criada via push(). MINMAXAVG: estatísticas do dia com MINT, MAXT, SUM_T, QTD, MINH, MAXH, SUM_H — calculadas incrementalmente a cada leitura. A média é calculada no front-end como SUM/QTD.' },
+  db_tkwhp: { t:'Firebase RTDB', c:'#f57c00', n:'tkwhp/{uid}/{mac}/{dia}', d:'Equivalente ao nó th, mas para freezers com medição de energia. RAWDATA armazena {DT, T, KWH, P, M}. MINMAXAVG inclui MINKWH, MAXKWH, SUM_KWH além das métricas de temperatura. O timestamp é gerado pelo servidor (GMT-3), não pelo dispositivo, garantindo consistência.' },
+  db_planos: { t:'Firebase RTDB', c:'#f57c00', n:'users/{uid}/planos/{thingid}', d:'Configuração do plano por dispositivo. Campos: plano (ouro/diamante), assinado, grafTempReal, medMinMaxVAtual, relDetalhado (3=ouro, 4=diamante), relResumido (2=ouro, 3=diamante), dispositivos (número sequencial). Limites: ouro=10 devices com amostragem≥30min; diamante=15 devices com amostragem≥10min.' },
+  db_perfil: { t:'Firebase RTDB', c:'#f57c00', n:'users/{uid}/perfil', d:'Dados do usuário: plano contratado (ouro/diamante), informações de perfil. Consultado pelas Cloud Functions para validar qual plano aplicar ao registrar um novo device e definir os limites de amostragem e número máximo de dispositivos permitidos.' },
+  db_tokens: { t:'Firebase RTDB', c:'#f57c00', n:'users/{uid}/deviceTokens', d:'Lista de tokens FCM dos smartphones cadastrados pelo usuário no aplicativo mobile. A função getTokensByUser() busca todos os tokens deste nó e itera sobre eles para enviar push notifications de alerta de temperatura para todos os dispositivos móveis do usuário.' },
+
+  /* Front-end */
+  html: { t:'Front-end', c:'#1f6feb', n:'devices.html', d:'Página de gerenciamento de dispositivos. Estruturada com Bootstrap 4 e SB Admin 2. Tem duas abas: "Renomear" (tabela de devices aprovados com inputs para alias, selects de Site/Sala) e "Novos" (devices aguardando aprovação/reprovação). Usa Firebase SDK via CDN (/__/firebase/7.17.1/). O wrapper é invisível até o usuário ser autenticado.' },
+  devjs: { t:'Front-end — Controller', c:'#1f6feb', n:'devices.js', d:'Controller principal do front-end. Fluxo: onAuthStateChanged → getDevices() → createTableDevices() + addOnScreenDevice(). Funções principais: createTableDevices() constrói as linhas da tabela dinamicamente; carregarSites() e carregarRoomsDeLojas() populam os selects com dados reais do Firebase; salvarDados() detecta e persiste apenas as alterações de alias/site/room.' },
+  auth: { t:'Front-end — Autenticação', c:'#1f6feb', n:'Firebase Auth', d:'Gerencia autenticação via firebase.auth().onAuthStateChanged(). Se o usuário não estiver logado, redireciona para index.html. O currentUID obtido aqui é a chave de acesso a todos os dados do usuário no Realtime Database. O botão de logout chama firebase.auth().signOut().' },
+  rtdb_fe: { t:'Front-end — Dados', c:'#1f6feb', n:'Firebase RTDB Web SDK', d:'O front-end usa .on("value") para escutar em tempo real users/{uid}/devices (tabela de devices aprovados) e devices/{email} (fila de novos). Usa .once("value") para carregar lojas (sites/rooms) ao popular os selects. Usa .update() em salvarDados() para persistir alias, site e room.' },
+  bootstrap: { t:'Front-end — UI', c:'#1f6feb', n:'Bootstrap 4 + SB Admin 2', d:'Framework CSS que estrutura o layout. SB Admin 2 é um template de dashboard que fornece sidebar, topbar, cards e tabelas estilizadas. O sidebar é gerado diretamente no HTML com links para os módulos do sistema (painel, desempenho, energia, mapeamento, dispositivos, suporte).' },
+  jquery: { t:'Front-end — Utilitário', c:'#1f6feb', n:'jQuery + util.js', d:'jQuery é usado para inicializar componentes Bootstrap. util.js (referenciado em assets/util.js) exporta funções auxiliares como getElem() (atalho para getElementById), createTD(), createA(), setInfoNavBarUser() e outros helpers usados em todo o código do front-end.' },
+
+  /* Infra */
+  firebase_hosting: { t:'Infraestrutura', c:'#da3633', n:'Firebase Hosting', d:'Serve os arquivos estáticos (HTML, CSS, JS, assets) com CDN global e HTTPS automático. O arquivo /__/firebase/init.js é gerado automaticamente pelo Firebase Hosting e injeta a configuração (apiKey, authDomain, databaseURL, etc.) sem expô-la hardcoded no código-fonte.' },
+  nodejs: { t:'Infraestrutura', c:'#da3633', n:'Node.js — Runtime', d:'Ambiente de execução das Cloud Functions v2. Cada function é exportada como onRequest() do pacote firebase-functions/v2/https, que expõe endpoints HTTPS gerenciados pelo Google Cloud. O Node.js executa de forma serverless, escalando automaticamente conforme demanda.' },
+  service_account: { t:'Infraestrutura', c:'#da3633', n:'Service Account JSON', d:'Arquivo de credenciais (fikiria-console-2577d11aac4f.json) que autentica o Admin SDK com privilégios de administrador no projeto Firebase. Contém private_key, client_email e project_id. ATENÇÃO: este arquivo deve ficar fora do repositório Git (listado no .gitignore).' },
+  express: { t:'Infraestrutura', c:'#da3633', n:'Express + EJS + express-ejs-layouts', d:'Framework web Node.js configurado em app.js para servir views com template engine EJS. Suporta body parsing (urlencoded e JSON), layouts com express-ejs-layouts, e define a pasta views/ para os templates. Base para endpoints que retornam HTML renderizado no servidor.' },
+};
+
+function show(key) {
+  var d = D[key]; if (!d) return;
+  var t = document.getElementById('dt');
+  t.textContent = d.t;
+  t.style.cssText = 'display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:6px;background:'+d.c+'33;color:'+d.c+';border:1px solid '+d.c+'55;';
+  document.getElementById('dn').textContent = d.n;
+  document.getElementById('dd').textContent = d.d;
+  var el = document.getElementById('det');
+  el.style.display = 'none';
+  void el.offsetWidth;
+  el.style.display = 'block';
+}
+</script>
+</body>
+</html>
